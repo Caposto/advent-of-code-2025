@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -54,12 +55,20 @@ func main() {
 	password := 0
 
 	for _, d := range directions {
-		dial += d
-		dial = ((dial % 100) + 100) % 100
+		// Part 1
+		// dial += d
+		// dial = ((dial % 100) + 100) % 100
 
-		if dial == 0 {
-			password++
-		}
+		// if dial == 0 {
+		// 	password++
+		// }
+
+		// Part 2
+		dial += d
+		// fmt.Println("Dial", dial)
+		// fmt.Println("Increment", int(math.Floor(float64(dial) / 100.0)))
+		password += int(math.Abs(math.Floor(float64(dial) / 100.0)))
+		dial = ((dial % 100) + 100) % 100
 		fmt.Println("Dial Position", dial)
 	}
 
