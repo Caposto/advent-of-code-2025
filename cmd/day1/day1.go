@@ -27,8 +27,8 @@ func check(e error) {
 // L or "Left" means - so replace "L" with a "-"
 func readDirections(filepath string) []int {
 	file, err := os.Open(filepath)
-	defer file.Close()
 	check(err)
+	defer file.Close()
 
 	fileScanner := bufio.NewScanner(file)
 	fileScanner.Split(bufio.ScanLines)
@@ -47,21 +47,16 @@ func readDirections(filepath string) []int {
 }
 
 func main() {
-	directions := readDirections("./cmd/day1/input2.txt")
+	directions := readDirections("./cmd/day1/input.txt")
 	
 	// Integer to track the dial's position starting at 50
 	dial := 50	
 	password := 0
 
 	for _, d := range directions {
-		dial = dial + d
-		if dial > 99 {
-			dial = dial % 100
-		}
-		if dial < 0 {
-			remainder := dial % -99
-			dial = 100 + remainder
-		}
+		dial += d
+		dial = ((dial % 100) + 100) % 100
+
 		if dial == 0 {
 			password++
 		}
