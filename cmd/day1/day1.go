@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -47,28 +46,46 @@ func readDirections(filepath string) []int {
 	return directions
 }
 
+// Define global variables to be accessbile by different methods
+var dial int = 50
+var password int = 0
+
+// Day 1 password
+func hanldeSimplePassword (d int) {
+	dial += d
+	dial = ((dial % 100) + 100) % 100
+
+	if dial == 0 {
+		password++
+	}
+}
+
+// Day 2 password
+func handle0x434C49434BPassword (d int) {
+	direction := 1
+	if d < 0 {
+			direction = -1
+	}
+
+	for i := 0; i != d; i += direction {
+			dial += direction
+			dial = ((dial % 100) + 100) % 100
+			if dial == 0 {
+					password++
+			}
+	}
+}
+
 func main() {
 	directions := readDirections("./cmd/day1/input.txt")
-	
-	// Integer to track the dial's position starting at 50
-	dial := 50	
-	password := 0
 
 	for _, d := range directions {
 		// Part 1
-		// dial += d
-		// dial = ((dial % 100) + 100) % 100
-
-		// if dial == 0 {
-		// 	password++
-		// }
+		// hanldeSimplePassword(d)
 
 		// Part 2
-		dial += d
-		// fmt.Println("Dial", dial)
-		// fmt.Println("Increment", int(math.Floor(float64(dial) / 100.0)))
-		password += int(math.Abs(math.Floor(float64(dial) / 100.0)))
-		dial = ((dial % 100) + 100) % 100
+		handle0x434C49434BPassword(d)
+
 		fmt.Println("Dial Position", dial)
 	}
 
