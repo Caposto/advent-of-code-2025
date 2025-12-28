@@ -1,4 +1,4 @@
-package main
+package day1
 
 import (
 	"bufio"
@@ -7,14 +7,6 @@ import (
 	"strconv"
 	"strings"
 )
-
-// Read file directions into an array
-// Transform array into integer: Right = +, Left = -
-// Use an integer to track the current position on the dial (starting at 50)
-// Itertate over arry of directions, incrementing by certain amount
-// Account for the rotation case (i.e 99 + 1 should go to 0, 0 - 1 should go to 99)
-// if dial > 99, dial = 0 + dial - 99
-// After every direction, if the dial is equal to 0, increment counter
 
 func check(e error) {
 	if e != nil {
@@ -51,7 +43,7 @@ var dial int = 50
 var password int = 0
 
 // Day 1 password
-func hanldeSimplePassword (d int) {
+func handleSimplePassword (d int) {
 	dial += d
 	dial = ((dial % 100) + 100) % 100
 
@@ -76,12 +68,24 @@ func handle0x434C49434BPassword (d int) {
 	}
 }
 
-func main() {
+// Part 1
+func FindSimplePassword() int {
 	directions := readDirections("./cmd/day1/input.txt")
 
 	for _, d := range directions {
 		// Part 1
-		// hanldeSimplePassword(d)
+		handleSimplePassword(d)
+		fmt.Println("Dial Position", dial)
+	}
+
+	return password
+}
+
+// Part 2
+func FindComplexPassword() int {
+	directions := readDirections("./cmd/day1/input.txt")
+
+	for _, d := range directions {
 
 		// Part 2
 		handle0x434C49434BPassword(d)
@@ -89,5 +93,5 @@ func main() {
 		fmt.Println("Dial Position", dial)
 	}
 
-	fmt.Println(password)
+	return password
 }
