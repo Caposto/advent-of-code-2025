@@ -67,6 +67,9 @@ func readProductIds(filepath string) []Range {
 	return ranges
 }
 
+// For each ID in the range, split the in half by digits
+// If the difference between the first and second half is 0, the halves are identical
+// and the ID is invalid
 func findInvalidIds(ranges []Range) int {
 	sum := 0
 	for _, r := range ranges {
@@ -95,7 +98,51 @@ func findInvalidIds(ranges []Range) int {
 	return sum
 }
 
+// Part 2
+// Going to have to compare every substring of digits to the rest of the string
+// Only have to use substrings up until the middle of the digit: 123456, only have to do 1, 12, 123
+// If length of string module length of substring does not equal 0, can skip
+// Get length of string, iterate from beginning to midpoint, compare substring to entire string
+func findInvalidIdsComplex(ranges []Range) int {
+	sum := 0
+
+	for _, r := range ranges {
+		for i := r.start; i <= r.end; i++ {
+			str := strconv.Itoa(i)
+			length := len(str)
+			mid := length / 2
+
+			for j := 1; j <= mid; j++ {
+				if length % j != 0 { // skips substrings that don't evenly fit into string
+        	continue
+    		}
+				substr := str[:j]
+				invalid := true
+
+				// Iterate over string using the length of the substring as an iterator
+				for k := j; k + j <= length; k += j {
+					
+					if substr != str[k: k + j] {
+						invalid = false
+						break 
+					}
+				}
+
+				if invalid {
+					fmt.Println("Invalid ID:", i)
+					sum += i
+					break // break to prevent duplicates
+				}
+			}
+		}
+	}
+
+	return sum
+}
+
 func main() {
 	ranges := readProductIds("./cmd/day2/input.txt")
-	fmt.Println(findInvalidIds(ranges))
+	// fmt.Println(findInvalidIds(ranges)) // Answer: 13108371860
+
+	fmt.Println(findInvalidIdsComplex(ranges))
 }
