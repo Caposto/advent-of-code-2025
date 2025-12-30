@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func check(e error) {
@@ -31,6 +32,29 @@ func readBanks(filepath string) []string {
 	return banks
 }
 
+// For every bank, iterate through each combination of digits from left to right
+func bruteForceJoltage(banks []string) int {
+	totalJoltage := 0
+	for _, bank := range banks {
+		maxJoltage := 0
+		for i := 0; i < len(bank); i++ {
+			for j := i + 1; j < len(bank); j++ {
+				var str = string(bank[i]) + string(bank[j])
+				joltage, err := strconv.Atoi(str)
+
+				if err != nil {
+					panic(err)
+				}
+
+				maxJoltage = max(maxJoltage, joltage)
+			}
+		}
+		fmt.Println(maxJoltage)
+		totalJoltage += maxJoltage
+	}
+	return totalJoltage
+}
+
 // Assumptions:
 // Each bank is on its own line in the input file
 // Only positive numbers
@@ -43,6 +67,6 @@ func readBanks(filepath string) []string {
 // if left + 1 >= max, increment left and increment right if l == r
 
 func main() {
-	banks := readBanks("./cmd/day3/input2.txt")
-	fmt.Println(banks)
+	banks := readBanks("./cmd/day3/input.txt")
+	fmt.Println(bruteForceJoltage(banks))
 }
