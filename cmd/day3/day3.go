@@ -32,7 +32,9 @@ func readBanks(filepath string) []string {
 	return banks
 }
 
+// Part 1
 // For every bank, iterate through each combination of digits from left to right
+// Time: O(n^2)
 func bruteForceJoltage(banks []string) int {
 	totalJoltage := 0
 	for _, bank := range banks {
@@ -55,6 +57,46 @@ func bruteForceJoltage(banks []string) int {
 	return totalJoltage
 }
 
+// I don't think this is right
+// // Part 1
+// // An optimized two pointer version for part 1
+// // Time: O(n)
+// func optimizedJoltage(banks []string) int {
+// 	totalJoltage := 0
+
+// 	for _, bank := range banks {
+// 		var l, r int = 0, 1
+		
+// 		maxVoltage := 0
+// 		for r < len(bank) {
+// 			// Convert left digit string to integer for pointer comparison
+// 			ld, _ := strconv.Atoi(string(bank[l]))
+
+// 			// Concatenate and convert digits to capture current max
+// 			var str = string(bank[l]) + string(bank[r])
+// 			currentVoltage, _ := strconv.Atoi(str)
+// 			maxVoltage = max(maxVoltage, currentVoltage)
+
+// 			if r + 1 == len(bank) {
+// 				break
+// 			}
+// 			next := bank[r + 1]
+// 			nextd, _ := strconv.Atoi(string(next))
+			
+// 			if nextd >= ld {
+// 				l = r
+// 				r++
+// 			} else {
+// 				r++
+// 			}
+// 		}
+// 		fmt.Println(maxVoltage)
+// 		totalJoltage += maxVoltage
+// 	}
+
+// 	return totalJoltage
+// }
+
 // Assumptions:
 // Each bank is on its own line in the input file
 // Only positive numbers
@@ -67,6 +109,7 @@ func bruteForceJoltage(banks []string) int {
 // if left + 1 >= max, increment left and increment right if l == r
 
 func main() {
-	banks := readBanks("./cmd/day3/input.txt")
+	banks := readBanks("./cmd/day3/input2.txt")
 	fmt.Println(bruteForceJoltage(banks))
+	fmt.Println(optimizedJoltage(banks))
 }
