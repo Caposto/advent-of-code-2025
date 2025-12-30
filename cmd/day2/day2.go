@@ -144,5 +144,5 @@ func main() {
 	ranges := readProductIds("./cmd/day2/input.txt")
 	// fmt.Println(findInvalidIds(ranges)) // Answer: 13108371860
 
-	fmt.Println(findInvalidIdsComplex(ranges))
+	fmt.Println(findInvalidIdsComplex(ranges)) // Answer: 22471660255
 }
