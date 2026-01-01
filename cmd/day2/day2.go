@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advent-of-code/utils"
 	"bufio"
 	"fmt"
 	"os"
@@ -24,15 +25,9 @@ type Range struct {
 	end int
 }
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func readProductIds(filepath string) []Range {
 	file, err := os.Open(filepath)
-	check(err)
+	utils.Check(err)
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
@@ -51,10 +46,10 @@ func readProductIds(filepath string) []Range {
 	for _, rs := range rangeStrings {
 		s := strings.Split(rs, "-")
 		start, err := strconv.Atoi(s[0])
-		check(err)
+		utils.Check(err)
 
 		end, err := strconv.Atoi(s[1])
-		check(err)
+		utils.Check(err)
 
 		r := Range {
 			start: start,

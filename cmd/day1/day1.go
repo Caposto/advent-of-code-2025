@@ -1,6 +1,7 @@
 package day1
 
 import (
+	"advent-of-code/utils"
 	"bufio"
 	"fmt"
 	"os"
@@ -8,18 +9,12 @@ import (
 	"strings"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 // Read directions from text file and convert to integer values
 // R or "Right" means + so remove the "R"
 // L or "Left" means - so replace "L" with a "-"
 func readDirections(filepath string) []int {
 	file, err := os.Open(filepath)
-	check(err)
+	utils.Check(err)
 	defer file.Close()
 
 	fileScanner := bufio.NewScanner(file)
@@ -31,7 +26,7 @@ func readDirections(filepath string) []int {
 		text = strings.ReplaceAll(text, "R", "")
 		text = strings.ReplaceAll(text, "L", "-")
 		number, err := strconv.Atoi(text)
-		check(err)
+		utils.Check(err)
 		directions = append(directions, number)
 	}
 
