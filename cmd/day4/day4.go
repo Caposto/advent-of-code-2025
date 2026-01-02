@@ -43,8 +43,9 @@ var neighbors = []Coordinate{
     { 1,  1}, // bottom-right
 }
 
-func findMovableRolls(input []string) int {
+func findMovableRolls(input []string) (int, []Coordinate) {
     result := 0
+		removables := make([]Coordinate, 0)
 
     for r := 0; r < len(input); r++ {
         for c := 0; c < len(input[r]); c++ {
@@ -66,14 +67,44 @@ func findMovableRolls(input []string) int {
 
             if count < 4 {
                 result++
+								removables = append(removables, Coordinate{r, c})
             }
         }
     }
 
-    return result
+    return result, removables
 }
+
+// After every iteration, swap the "@" with "."
+// This seems like extremely brute force, is there a more optimized solution
+func findAndRemoveRolls(input []string) int {
+	total := 0
+
+	for {
+		quantity, removables := findMovableRolls(input)
+		if quantity == 0 {
+			break
+		}
+
+		total += quantity
+
+		// strings are immutable so must cast to array of bytes
+		for _, coord := range removables {
+			row := []byte(input[coord.Row]) // convert string → mutable bytes
+			row[coord.Column] = '.'          // modify
+			input[coord.Row] = string(row)   // convert back to string
+		}
+	}
+
+	return total
+}
+
+
 
 func main() {
 	input := readInput("./cmd/day4/input.txt")
-	fmt.Println(findMovableRolls(input)) // Part 1 answer: 
+	removable, _ := findMovableRolls(input)
+	fmt.Println(removable) // Part 1 answer: 1467
+
+	fmt.Println(findAndRemoveRolls(input)) // Part 2 answer: 8484
 }
