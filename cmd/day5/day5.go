@@ -9,13 +9,18 @@ import (
 	"strings"
 )
 
-// Iterate through input. Add all fresh ids to a map for constant time lookup map[int]bool
+// Iterate through input. Add all fresh id ranges to an array
 // Add all valid IDs into a slice
 // Iterate through slice and see if they are present in the map
 // T: O(n), S: O(n)
 
-func readInput(filepath string) (map[int]bool, []int) {
-	fresh := make(map[int]bool, 0)
+type Range struct {
+	start int
+	end int
+}
+
+func readInput(filepath string) ([]Range, []int) {
+	fresh := make([]Range, 0)
 	validIds := make([]int, 0)
 
 	file, err := os.Open(filepath)
@@ -38,9 +43,7 @@ func readInput(filepath string) (map[int]bool, []int) {
 		end, err := strconv.Atoi(split[1])
 		utils.Check(err)
 
-		for i := start; i <= end; i++ {
-			fresh[i] = true
-		}
+		fresh = append(fresh, Range{start, end})
 	}
 
 	// Process second half of input for valid ids
@@ -53,8 +56,25 @@ func readInput(filepath string) (map[int]bool, []int) {
 	return fresh, validIds
 }
 
+func countFresh(fresh []Range, valid []int) int {
+	result := 0
+
+	for _, id := range valid {
+		for _, r := range fresh {
+			if id >= r.start && id <= r.end {
+				result++
+				break // break the loop otherwise it might double count due to overlapping ranges
+			}
+		}
+	}
+
+	return result
+}
+
 func main() {
-	freshIds, validIds := readInput("./cmd/day5/input2.txt")
-	fmt.Println("Fresh: ", freshIds)
-	fmt.Println("Valid: ", validIds)
+	freshIds, validIds := readInput("./cmd/day5/input.txt")
+	// fmt.Println("Fresh: ", freshIds)
+	// fmt.Println("Valid: ", validIds)
+
+	fmt.Println("Fresh Count: ", countFresh(freshIds, validIds))
 }
