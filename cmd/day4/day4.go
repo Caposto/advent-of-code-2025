@@ -99,8 +99,6 @@ func findAndRemoveRolls(input []string) int {
 	return total
 }
 
-
-
 func main() {
 	input := readInput("./cmd/day4/input.txt")
 	removable, _ := findMovableRolls(input)
