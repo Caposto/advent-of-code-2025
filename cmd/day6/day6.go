@@ -47,10 +47,31 @@ func readInput(filepath string) ([][]int, []string) {
 	return nums, ops
 }
 
-// Initial thought, put entire input into a matrix [][]int
-// iterate through bouttom row for the sign and than iterate though column for values
+func cephalopodMath(nums [][]int, ops []string) int {
+	result := 0
+
+	for i := range ops {
+		prob := 0
+		if ops[i] == "*" {
+			prob = 1
+		}
+		for j := range nums {
+			switch ops[i] {
+				case "+":
+					prob += nums[j][i]
+				case "*":
+					prob *= nums[j][i]
+			}
+		}
+		result += prob
+	}
+
+	return result
+}
+
 func main() {
-	nums, ops := readInput("./cmd/day6/input2.txt")
-	fmt.Println(nums)
-	fmt.Println(ops)
+	nums, ops := readInput("./cmd/day6/input.txt")
+	// fmt.Println(nums)
+	// fmt.Println(ops)
+	fmt.Println(cephalopodMath(nums, ops)) // Part 1 Answer: 4309240495780
 }
