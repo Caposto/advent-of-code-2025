@@ -47,7 +47,8 @@ func readInput(filepath string) ([][]int, []string) {
 	return nums, ops
 }
 
-func cephalopodMath(nums [][]int, ops []string) int {
+// Part 1
+func cephalopodMathSimple(nums [][]int, ops []string) int {
 	result := 0
 
 	for i := range ops {
@@ -69,9 +70,67 @@ func cephalopodMath(nums [][]int, ops []string) int {
 	return result
 }
 
+// TODO: Taking the L, I know I have to preserve the original spacing of the input
+// Part 2 - Preserve original spacing of input
+// Get max length of each column to know how many iterations to run
+// Iterate through each column from top to bottom
+// If index exists, tack that current digit on to the string
+// place new numbers in a matrix from top to bottom and run simple math on them
+func cephalopodMathComplex(nums [][]int, ops []string) int {
+	result := 0
+	lengths := make([]int, len(ops))
+
+	rows := len(nums)
+	cols := len(nums[0])
+	strs := make([][]string, rows) 
+	for i := 0; i < rows; i++ {
+		strs[i] = make([]string, cols)
+	}
+
+	// Get the "length" of a number (count its digits) and find the max per column
+	// This is how many numbers will be created in the new column
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			str := strconv.Itoa(nums[i][j])
+			lengths[j] = max(lengths[j], len(str))
+			strs[i][j] = str
+		}
+	}
+
+	for j := 0; j < cols; j++ {
+		n := lengths[j] - 1
+		tmp := 0
+		if ops[j] == "*" {
+			tmp = 1
+		} 
+		for n >= 0 {
+			newStr := ""
+			for i := 0; i < rows; i++ {
+				if n < len(strs[i][j]) {
+					newStr += string(strs[i][j][n])
+				}
+			}
+			fmt.Println(newStr)
+			newNum, _ := strconv.Atoi(newStr)
+			if ops[j] == "*" {
+				tmp *= newNum
+			} else {
+				tmp += newNum
+			}
+			result += tmp
+			n--
+		}
+	}
+
+	return result
+}
+
+
 func main() {
-	nums, ops := readInput("./cmd/day6/input.txt")
+	nums, ops := readInput("./cmd/day6/input2.txt")
 	// fmt.Println(nums)
 	// fmt.Println(ops)
-	fmt.Println(cephalopodMath(nums, ops)) // Part 1 Answer: 4309240495780
+	fmt.Println(cephalopodMathSimple(nums, ops)) // Part 1 Answer: 4309240495780
+
+	fmt.Println(cephalopodMathComplex(nums, ops))
 }
