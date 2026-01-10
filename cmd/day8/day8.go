@@ -4,6 +4,7 @@ import (
 	"advent-of-code/utils"
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -51,7 +52,15 @@ func readInput(filepath string) []Coord {
 	return circuits
 }
 
-func main() {
-	circuits := readInput("./cmd/day8/input2.txt")
-	fmt.Println(circuits)
+// Compute the distance between 2 x,y,z coordinates
+func distance(c1, c2 Coord) float64 {
+	return math.Sqrt(float64((c1.x - c2.x)^2 + (c1.y - c2.y)^2 + (c1.z - c2.z)^2))
 }
+
+func main() {
+	// circuits := readInput("./cmd/day8/input2.txt")
+	// fmt.Println(circuits)
+
+	fmt.Println(distance(Coord{162,817,812}, Coord{57,618,57}))
+}
+
