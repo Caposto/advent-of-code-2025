@@ -27,6 +27,11 @@ type Coord struct {
 	z int
 }
 
+type Circuit struct {
+	label int
+	distance float64
+}
+
 func readInput(filepath string) []Coord {
 	file, err := os.Open(filepath)
 	utils.Check(err)
@@ -54,13 +59,30 @@ func readInput(filepath string) []Coord {
 
 // Compute the distance between 2 x,y,z coordinates
 func distance(c1, c2 Coord) float64 {
-	return math.Sqrt(float64((c1.x - c2.x)^2 + (c1.y - c2.y)^2 + (c1.z - c2.z)^2))
+	dx := float64(c1.x - c2.x)
+	dy := float64(c1.y - c2.y)
+	dz := float64(c1.z - c2.z)
+
+	return math.Sqrt(dx*dx + dy*dy + dz*dz)
+}
+
+// Compute the distance of each circuit to every 
+// The index of the circuit in the input is it's label. I.e circuit 0, circuit 1. The positio
+func allDistances(circuits []Coord) map[int][]Circuit {
+	distances := make(map[int][]Circuit, 0)
+	for i, c1 := range circuits {
+		for j, c2 := range circuits {
+			d := distance(c1, c2)
+			distances[i] = append(distances[i], Circuit{j, d})
+		}
+	}
+	return distances
 }
 
 func main() {
-	// circuits := readInput("./cmd/day8/input2.txt")
+	circuits := readInput("./cmd/day8/input2.txt")
 	// fmt.Println(circuits)
 
-	fmt.Println(distance(Coord{162,817,812}, Coord{57,618,57}))
+	fmt.Println(allDistances(circuits))
 }
 
