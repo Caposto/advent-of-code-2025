@@ -56,6 +56,54 @@ func countSplits(manifold []string, rowLength int) int {
 	return splits
 }
 
+// Recursive brute force solution
+// Funs for smaller inputs but takes too long for longer inputs
+// T: Exponential, O(2^n) where n is the number of splits
+func quantum(manifold []string, row int, column int) int {
+	// Base case - tachyon reaches the bottom of the manifold
+	if row == len(manifold) - 1 {
+		return 1
+	}
+	// When you encounter a split make a recursive call in either direction
+	if manifold[row][column] == '^' {
+		return quantum(manifold, row, column - 1) + quantum(manifold, row, column + 1)
+	}
+	// Progress downwards with the current tachyon path
+	return quantum(manifold, row + 1, column)
+}
+
+type Coord struct {
+	row int
+	col int
+}
+
+var previous map[Coord]int
+
+// Memoization
+// T: O(n * m) where n is the number of rows, m is the number of columns
+func quantumMemo(manifold []string, row int, column int) int {
+	key := Coord{row, column}
+
+	// if r, c in the cache, return the cached result
+	if val, ok := previous[key]; ok {
+		return val
+	}
+	
+	var result int
+
+	// Base Case
+	if row == len(manifold) - 1 {
+		result = 1
+	} else if manifold[row][column] == '^' {
+		result = quantumMemo(manifold, row, column-1) + quantumMemo(manifold, row, column + 1)
+	} else {
+		result = quantumMemo(manifold, row + 1, column)
+	}
+
+	previous[key] = result
+	return result
+}
+
 func main() {
 	manifold, length := readInput("./cmd/day7/input.txt")
 
@@ -63,4 +111,18 @@ func main() {
 	// fmt.Println(manifold)
 
 	fmt.Println(countSplits(manifold, length)) // Part 1 Answer: 1555
+
+	
+	var start int
+	for i, ch := range manifold[0] {
+		if ch == 'S' {
+			start = i
+		}
+	}
+	// Part 2, brute force
+	// fmt.Println(quantum(manifold, 0, start))
+
+	// Part 2, memoized
+	previous = make(map[Coord]int, 0)
+	fmt.Println(quantumMemo(manifold, 0, start)) // Part 2 Answer: 12895232295789
 }
