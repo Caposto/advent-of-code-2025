@@ -3,9 +3,11 @@ package main
 import (
 	"advent-of-code/utils"
 	"bufio"
+	"cmp"
 	"fmt"
 	"math"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -27,6 +29,7 @@ type Coord struct {
 	z int
 }
 
+// Use this to help track connections between cicuits, using the index of each coordinate in the input as its label
 type Circuit struct {
 	label int
 	distance float64
@@ -66,8 +69,7 @@ func distance(c1, c2 Coord) float64 {
 	return math.Sqrt(dx*dx + dy*dy + dz*dz)
 }
 
-// Compute the distance of each circuit to every 
-// The index of the circuit in the input is it's label. I.e circuit 0, circuit 1. The positio
+// Compute the distance of each circuit to every other circuit sorted from closest to farthest
 func allDistances(circuits []Coord) map[int][]Circuit {
 	distances := make(map[int][]Circuit, 0)
 	for i, c1 := range circuits {
@@ -75,14 +77,19 @@ func allDistances(circuits []Coord) map[int][]Circuit {
 			d := distance(c1, c2)
 			distances[i] = append(distances[i], Circuit{j, d})
 		}
+		// Sort from closest to farthest
+		slices.SortFunc(distances[i], func(a, b Circuit) int {
+			return cmp.Compare(a.distance, b.distance)
+		})
 	}
 	return distances
 }
 
 func main() {
 	circuits := readInput("./cmd/day8/input2.txt")
+	d := allDistances(circuits)
 	// fmt.Println(circuits)
 
-	fmt.Println(allDistances(circuits))
+	fmt.Println(d)
 }
 
