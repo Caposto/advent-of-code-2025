@@ -27,6 +27,7 @@ type Junction struct {
 type JunctionConnection struct {
 	start int
 	end int
+	c Coord
 	distance float64
 }
 
@@ -100,9 +101,6 @@ func allDistancesV2(junctions []Coord) []JunctionConnection {
 	return distances
 }
 
-// Form the first 1000 connections
-// Than use union-find to identify all of the circuits
-// Get the size of the 3 largest circuits and multiply
 
 // Create a helper DSU - Disjoint Union struct
 type DSU struct {
@@ -120,6 +118,8 @@ func NewDSU(n int) *DSU {
 	return &DSU{parent: p, size: s}
 }
 
+// Find the parent or identifying member of the set (root)
+// Go until the parent value matches its own index
 func (d *DSU) Find(x int) int {
 	if d.parent[x] != x {
 		d.parent[x] = d.Find(d.parent[x])
@@ -127,11 +127,11 @@ func (d *DSU) Find(x int) int {
 	return d.parent[x]
 }
 
-func (d *DSU) Union(a, b int) bool {
+func (d *DSU) Union(a, b int) (int, bool) {
 	ra := d.Find(a)
 	rb := d.Find(b)
 	if ra == rb {
-		return false // already in the same circuit (they have the same parent)
+		return -1, false // already in the same circuit (they have the same parent)
 	}
 
 	// union by size
@@ -140,7 +140,7 @@ func (d *DSU) Union(a, b int) bool {
 	}
 	d.parent[rb] = ra
 	d.size[ra] += d.size[rb]
-	return true
+	return d.size[ra], true
 }
 
 // Returns all component sizes (one per root).
@@ -164,31 +164,46 @@ func main() {
 	edges := allDistancesV2(junctions)
 
 	// Part 1, answer: 57564
-	k := 1000 
-	if k > len(edges) {
-		k = len(edges)
-	}
+	// k := 1000 
+	// if k > len(edges) {
+	// 	k = len(edges)
+	// }
 
-	uf := NewDSU(len(junctions))
+	// uf := NewDSU(len(junctions))
 
-	for i := 0; i < k; i++ {
+	// for i := 0; i < k; i++ {
+	// 	e := edges[i]
+	// 	uf.Union(e.start, e.end)
+	// }
+
+	// sizes := uf.ComponentSizes()
+	// slices.SortFunc(sizes, func(a, b int) int {
+	// 	return cmp.Compare(b, a) // descending order
+	// })
+
+	// if len(sizes) < 3 {
+  //   fmt.Println("Not enough circuits to multiply top 3.")
+  //   fmt.Println("Circuit sizes:", sizes)
+  //   return
+	// }
+
+	// result := sizes[0] * sizes[1] * sizes[2]
+	// fmt.Println("Top 3 circuit sizes:", sizes[0], sizes[1], sizes[2])
+	// fmt.Println("Product:", result)
+
+	// Part 2 - Answer: 133296744
+	uf2 := NewDSU(len(junctions))
+
+	for i := 0; i < len(edges); i++ {
 		e := edges[i]
-		uf.Union(e.start, e.end)
+
+		size, _ := uf2.Union(e.start, e.end)
+		// Run until one disjoint set is the size of all of the junctions
+		if size == len(junctions) {
+			fmt.Println(junctions[e.start]) // {19614 65233 3519}
+			fmt.Println(junctions[e.end]) // {6796 65041 302}
+			break
+		}
 	}
-
-	sizes := uf.ComponentSizes()
-	slices.SortFunc(sizes, func(a, b int) int {
-		return cmp.Compare(b, a) // descending order
-	})
-
-	if len(sizes) < 3 {
-    fmt.Println("Not enough circuits to multiply top 3.")
-    fmt.Println("Circuit sizes:", sizes)
-    return
-	}
-
-	result := sizes[0] * sizes[1] * sizes[2]
-	fmt.Println("Top 3 circuit sizes:", sizes[0], sizes[1], sizes[2])
-	fmt.Println("Product:", result)
 }
 
