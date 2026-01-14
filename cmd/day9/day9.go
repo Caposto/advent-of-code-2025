@@ -150,7 +150,7 @@ func main() {
 
 	fmt.Println(maxArea(tiles)) // Part 1 Answer: 4782268188
 
-	grid := createGrid(tiles)
+	grid, _ := createGrid(tiles)
 	for _, row := range grid {
 		fmt.Println(string(row))
 	}
